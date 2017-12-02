@@ -30,9 +30,10 @@ public class Questions {
 		fillIn.setStyle("-fx-font-size: 20;");
 		Label rows = new Label("Rows:");
 		rows.setStyle("-fx-font-size: 15;");
-		Label max = new Label("(Max: " + 5000 + ")");
+		Label max = new Label("(Max: " + 50 + ")");
 		max.setTextFill(Color.RED);
-		TextField textField = new TextField("5");
+		
+		TextField textField = new TextField("3");
 		textField.textProperty().addListener((observable) -> {
 			pane.getChildren().clear();
 		    generateRows(pane, textField);
@@ -76,20 +77,23 @@ public class Questions {
 	
 	private static void generateRows(GridPane pane, TextField textField) {
 		try {
-			if (Integer.parseInt(textField.getText()) < 5000) {
-				TextField a;
-				TextField b;
-				for (int i = 0; i < Integer.parseInt(textField.getText()) * 2; i += 2) {
-					pane.add(new Label("Q"), 0, i);
-					pane.add(new Label("A"), 1, i);
-					a = new TextField("");
-					b = new TextField("");
-					pane.add(a, 0, i + 1);
-					pane.add(b, 1, i + 1);
-					questionsHash.put(a, b);
-				}
+			if (Integer.parseInt(textField.getText()) > 50) {
+				textField.setText("50");
 			}
-			
+			TextField a;
+			TextField b;
+			for (int i = 0; i < Integer.parseInt(textField.getText()) * 2; i += 2) {
+				pane.add(new Label("Q"), 0, i);
+				pane.add(new Label("A"), 1, i);
+				a = new TextField("");
+				b = new TextField("");
+				pane.add(a, 0, i + 1);
+				pane.add(b, 1, i + 1);
+				
+				System.out.println("Q.a.getText() : " + a.getText());
+				System.out.println("A.a.getText() : " + b.getText());
+				questionsHash.put(a, b);
+			}		
 		} catch (NumberFormatException e) {
 			
 		}
@@ -133,24 +137,21 @@ public class Questions {
 	}
 	
 	private static void nextQuestion(Label ask, TextField textField, Iterator<Entry<TextField, TextField>> it) {
-		//for (int i = 0; i < Integer.parseInt(textField.getText()); i++) {
-			
 			while (it.hasNext()) {
-				System.out.println(it.next());
 				Map.Entry<TextField, TextField> pair = (Map.Entry<TextField, TextField>)it.next();
 				TextField qu = pair.getKey();
-				TextField ans = pair.getValue();
-				System.out.println("qu: " + qu);
-				System.out.println("ans: " + ans);
-				if(qu.getText().equals("") || ans.getText().equals("")) {
+				TextField an = pair.getValue();
+				
+				System.out.println("qu.getText() : " + qu.getText());
+				System.out.println("an.getText() : " + an.getText());
+				
+				if(qu.getText().equals("") || an.getText().equals("")) {
 					ask.setText(qu.getText());
 				} else {
 					nextQuestion(ask, textField, it);
-				}
-		//}
-		
-			System.out.println(ans.getText().equals(""));
-			System.out.println(qu.getText());
+			}
+			
+			System.out.println();
 		}
 	}
 	
