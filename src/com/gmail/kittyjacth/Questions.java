@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import java.util.Random;
 import java.util.stream.Collectors;
 
+import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -22,7 +23,7 @@ public class Questions {
 	static Scene sceneQuestions;
 	static HashMap<TextField, TextField> questionsHash = new HashMap<TextField, TextField>();
 	
-	public static void FillIn(Stage window, Button buttonNext) {
+	public static void FillIn(Stage window, Button buttonNext, Button buttonSave) {
 		GridPane pane = new GridPane();
 		BorderPane paneB = new BorderPane();
 		ScrollPane paneScr = new ScrollPane(pane);
@@ -33,10 +34,10 @@ public class Questions {
 		Label max = new Label("(Max: " + 50 + ")");
 		max.setTextFill(Color.RED);
 		
-		TextField textField = new TextField("3");
-		textField.textProperty().addListener((observable) -> {
+		TextField rowCount = new TextField("3");
+		rowCount.textProperty().addListener((observable) -> {
 			pane.getChildren().clear();
-		    generateRows(pane, textField);
+		    generateRows(pane, rowCount);
 		});
 		
 		pane.setHgap(10);
@@ -50,26 +51,30 @@ public class Questions {
 		HBox boxH2 = new HBox(5);
 		boxH2.getChildren().addAll(rows, max);
 		
-		boxV.getChildren().addAll(fillIn, boxH2, textField);
+		boxV.getChildren().addAll(fillIn, boxH2, rowCount);
 		
 		//HBox
-		HBox boxH = new HBox(5);
-		boxH.setPadding(new Insets(10,10,10,10));
+		HBox boxSave = new HBox(5);
+		boxSave.setPadding(new Insets(10,10,10,10));
+		
+		HBox boxNext = new HBox(5);
+		boxNext.setPadding(new Insets(10,10,10,10));
 		
 		Pane space = new Pane();
-		space.setMinWidth(400);
+		space.setMinWidth(100);
 		
-		buttonNext.setOnAction(e -> QuestionsAsk(window, buttonNext, pane, textField));
-		boxH.getChildren().addAll(space, buttonNext);
+		buttonNext.setOnAction(e -> QuestionsAsk(window, buttonNext, pane, rowCount));
+		buttonSave.setOnAction(e -> insertQuestionsIntoQuestionsHash(pane));
+		boxNext.getChildren().addAll(space, buttonNext, buttonSave);
 		
 		paneB.setCenter(paneScr);
-		paneB.setBottom(boxH);
+		paneB.setBottom(boxNext);
 		paneB.setTop(boxV);
 		
 
 		paneScr.setFitToHeight(true);
 		
-		generateRows(pane, textField);
+		generateRows(pane, rowCount);
 		
 		sceneFillIn = new Scene(paneB, 500, 500);
 		window.setScene(sceneFillIn);
@@ -92,10 +97,37 @@ public class Questions {
 				
 				System.out.println("Q.a.getText() : " + a.getText());
 				System.out.println("A.a.getText() : " + b.getText());
-				questionsHash.put(a, b);
 			}		
 		} catch (NumberFormatException e) {
 			
+		}
+	}
+	
+	private static void insertQuestionsIntoQuestionsHash(GridPane pane){
+		ObservableList<Node> nodeList = pane.getChildren();
+		
+		for (int i = 0; i < nodeList.size(); i++){
+			
+			Node n = nodeList.get(i);
+			System.out.println(n instanceof TextField ? ((TextField)n).getText() : "Not a TextField object");
+			
+			if (n instanceof TextField){
+				
+				TextField q = (TextField) n;
+				TextField a = (TextField)nodeList.get(i+1);
+				
+				System.out.println("!!! " + a.getText());
+				System.out.println("!!! " + q.getText());
+				if ( !q.getText().equals("") && !a.getText().equals("")){
+					questionsHash.put(q, a);
+				}
+				
+				i = i + 1; // jump two cells in the list cause we used two to put in the map
+			}
+		}
+		
+		for (Map.Entry<TextField, TextField> t : questionsHash.entrySet()){
+			System.out.println("t.key: " + t.getKey().getText() +  " || t.value: " + t.getValue().getText() );
 		}
 	}
 	
