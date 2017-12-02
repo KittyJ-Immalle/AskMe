@@ -142,7 +142,7 @@ public class Questions {
 				TextField ans = pair.getValue();
 				System.out.println("qu: " + qu);
 				System.out.println("ans: " + ans);
-				if(qu.getText().equals("") || ans.getText().equals("")) {
+				if(qu.getText().equals("") == false || ans.getText().equals("") == false) {
 					ask.setText(qu.getText());
 				} else {
 					nextQuestion(ask, textField, it);
