@@ -27,7 +27,6 @@ public class AppWindow extends Application{
 		//Next button
 		Button buttonNext = new Button("Next");
 		buttonNext.setStyle("-fx-font-size:20;");
-
 		
 		window = primaryStage;
 		window.setTitle("AskMe!");
@@ -58,12 +57,15 @@ public class AppWindow extends Application{
 		Label labelExp = new Label("Explanation");
 		labelExp.setStyle("-fx-font-size: 30;");
 		
+		Button buttonSave = new Button("Save");
+		buttonSave.setStyle("-fx-font-size:20;");
+		
 		Text textExp = new Text(10, 50, "");
 		textExp.setText("This is an application meant for studying, quizes,...You will have to fill in your questions and answers. When I ask you the question, and you answer correctly, you get to go to the next question. However, if not answered correctly, you'll have to keep answering until you get it right.\nSkipping is allowed.");
 		textExp.setWrappingWidth(490);
 		textExp.setStyle("-fx-font-size: 15;");
 		
-		buttonNext.setOnAction(e -> Questions.FillIn(window, buttonNext));
+		buttonNext.setOnAction(e -> Questions.FillIn(window, buttonNext, buttonSave));
 		
 		BorderPane border = new BorderPane();
 
