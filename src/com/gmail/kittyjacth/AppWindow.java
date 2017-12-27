@@ -57,15 +57,14 @@ public class AppWindow extends Application{
 		Label labelExp = new Label("Explanation");
 		labelExp.setStyle("-fx-font-size: 30;");
 		
-		Button buttonSave = new Button("Save");
-		buttonSave.setStyle("-fx-font-size:20;");
+		
 		
 		Text textExp = new Text(10, 50, "");
 		textExp.setText("This is an application meant for studying, quizes,...You will have to fill in your questions and answers. When I ask you the question, and you answer correctly, you get to go to the next question. However, if not answered correctly, you'll have to keep answering until you get it right.\nSkipping is allowed.");
 		textExp.setWrappingWidth(490);
 		textExp.setStyle("-fx-font-size: 15;");
 		
-		buttonNext.setOnAction(e -> Questions.FillIn(window, buttonNext, buttonSave));
+		buttonNext.setOnAction(e -> Questions.fillInQuestions(window, buttonNext));
 		
 		BorderPane border = new BorderPane();
 

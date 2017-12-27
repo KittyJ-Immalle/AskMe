@@ -20,28 +20,29 @@ public class Questions {
 	static Scene sceneQuestions;
 	static HashMap<TextField, TextField> questionsHash = new HashMap<TextField, TextField>();
 	
-	public static void FillIn(Stage window, Button buttonNext, Button buttonSave) {
-		GridPane pane = new GridPane();
-		BorderPane paneB = new BorderPane();
-		ScrollPane paneScr = new ScrollPane(pane);
+	public static void fillInQuestions(Stage window, Button buttonNext) {
+		GridPane centerPane = new GridPane();
+		BorderPane finalPane = new BorderPane();
+		ScrollPane scrollPane = new ScrollPane(centerPane);
 		Label fillIn = new Label("Please fill in.");
-		fillIn.setStyle("-fx-font-size: 20;");
 		Label rows = new Label("Rows:");
-		rows.setStyle("-fx-font-size: 15;");
 		Label max = new Label("(Max: " + 50 + ")");
+		
+		fillIn.setStyle("-fx-font-size: 20;");
+		rows.setStyle("-fx-font-size: 15;");
 		max.setTextFill(Color.RED);
 		
 		TextField rowCount = new TextField("3");
 		rowCount.textProperty().addListener((observable) -> {
-			pane.getChildren().clear();
-		    generateRows(pane, rowCount);
+			centerPane.getChildren().clear();
+		    generateRows(centerPane, rowCount);
 		});
 		
-		pane.setHgap(10);
-		pane.setVgap(10);
-		pane.setPadding(new Insets(10,10,10,10));
+		centerPane.setHgap(10);
+		centerPane.setVgap(10);
+		centerPane.setPadding(new Insets(10,10,10,10));
 		
-		//VBox
+		//center
 		VBox boxV = new VBox(5);
 		boxV.setPadding(new Insets(10,10,10,10));
 		
@@ -50,30 +51,30 @@ public class Questions {
 		
 		boxV.getChildren().addAll(fillIn, boxH2, rowCount);
 		
-		//HBox
-		HBox boxSave = new HBox(5);
-		boxSave.setPadding(new Insets(10,10,10,10));
-		
-		HBox boxNext = new HBox(5);
-		boxNext.setPadding(new Insets(10,10,10,10));
+		//lower
+		HBox lowerBox = new HBox(5);
+		lowerBox.setPadding(new Insets(10,10,10,10));
 		
 		Pane space = new Pane();
-		space.setMinWidth(100);
+		space.setMinWidth(400);
 		
-		buttonNext.setOnAction(e -> QuestionsAsk(window, buttonNext, pane, rowCount));
-		buttonSave.setOnAction(e -> insertQuestionsIntoQuestionsHash(pane));
-		boxNext.getChildren().addAll(space, buttonNext, buttonSave);
+		buttonNext.setOnAction(e -> {
+			insertQuestionsIntoQuestionsHash(centerPane);
+			askQuestions(window, buttonNext, centerPane, rowCount);
+		});
 		
-		paneB.setCenter(paneScr);
-		paneB.setBottom(boxNext);
-		paneB.setTop(boxV);
+		lowerBox.getChildren().addAll(space, buttonNext);
+		
+		finalPane.setCenter(scrollPane);
+		finalPane.setBottom(lowerBox);
+		finalPane.setTop(boxV);
 		
 
-		paneScr.setFitToHeight(true);
+		scrollPane.setFitToHeight(true);
 		
-		generateRows(pane, rowCount);
+		generateRows(centerPane, rowCount);
 		
-		sceneFillIn = new Scene(paneB, 500, 500);
+		sceneFillIn = new Scene(finalPane, 500, 500);
 		window.setScene(sceneFillIn);
 	}
 	
@@ -128,39 +129,49 @@ public class Questions {
 		}
 	}
 	
-	private static void QuestionsAsk(Stage window, Button buttonNext, GridPane gridPane, TextField textField) {
+	private static void askQuestions(Stage window, Button buttonNext, GridPane gridPane, TextField textField) {
 		generateRows(gridPane, textField);
+		
 		Label ask = new Label();
-		ask.setStyle("-fx-font-size:20;");
 		TextField resp = new TextField();
 		Button quit = new Button("Quit");
-		quit.setStyle("-fx-font-size:20;");
-		Button check = new Button("Check");
-		check.setStyle("-fx-font-size:20;");
+		Button check = new Button("Answer");
 		Pane space = new Pane();
-		space.setMinWidth(200);
+		Pane space2 = new Pane();
 		
-		VBox localBoxV = new VBox(5);
-		localBoxV.setPadding(new Insets(10,10,10,10));
-		localBoxV.getChildren().addAll(ask, resp);
-		localBoxV.setAlignment(Pos.CENTER);
+		ask.setStyle("-fx-font-size:20;");
+		quit.setStyle("-fx-font-size:20;");
+		check.setStyle("-fx-font-size:20;");
+		space.setMinWidth(190);
+		space2.setMinWidth(110);
 		
-		HBox localBoxH = new HBox(5);
-		localBoxH.setPadding(new Insets(10,10,10,10));
-		localBoxH.getChildren().addAll(space, check, buttonNext);
+		HBox topBox = new HBox(5);
+		topBox.setPadding(new Insets(10,10,10,10));
+		topBox.getChildren().add(quit);
 		
-		BorderPane localPane = new BorderPane();
-		localPane.setTop(quit);
-		localPane.setCenter(localBoxV);
-		localPane.setBottom(localBoxH);
+		VBox centerBox = new VBox(5);
+		centerBox.setPadding(new Insets(10,10,10,10));
+		centerBox.getChildren().addAll(ask, resp);
+		centerBox.setAlignment(Pos.CENTER);
+		
+		HBox lowerBox = new HBox(5);
+		lowerBox.setPadding(new Insets(10,10,10,10));
+		lowerBox.getChildren().addAll(space, check, space2, buttonNext);
+		
+		BorderPane finalPane = new BorderPane();
+		finalPane.setTop(topBox);
+		finalPane.setCenter(centerBox);
+		finalPane.setBottom(lowerBox);
 		
 		Iterator<Entry<TextField, TextField>> it = questionsHash.entrySet().iterator();
 		nextQuestion(ask, textField, it);
 		
-		//for(Map.Entry<TextField, TextField> entry:questionsHash.entrySet()) {
-			
-		//}
-		sceneQuestions = new Scene(localPane, 500, 500);
+		sceneQuestions = new Scene(finalPane, 500, 500);
+		
+		// DON'T FORGET
+		// buttonNext.setOnAction();
+		// quit.setOnAction();
+		// check.setOnAction();
 		
 		window.setScene(sceneQuestions);
 	}
