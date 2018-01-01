@@ -60,7 +60,7 @@ public class Questions {
 		
 		buttonNext.setOnAction(e -> {
 			insertQuestionsIntoQuestionsHash(centerPane);
-			askQuestions(window, buttonNext, centerPane, rowCount);
+			askQuestions(window, buttonNext);
 		});
 		
 		lowerBox.getChildren().addAll(space, buttonNext);
@@ -91,10 +91,7 @@ public class Questions {
 				a = new TextField("");
 				b = new TextField("");
 				pane.add(a, 0, i + 1);
-				pane.add(b, 1, i + 1);
-				
-				System.out.println("Q.a.getText() : " + a.getText());
-				System.out.println("A.a.getText() : " + b.getText());
+				pane.add(b, 1, i + 1);		
 			}		
 		} catch (NumberFormatException e) {
 			
@@ -107,15 +104,14 @@ public class Questions {
 		for (int i = 0; i < nodeList.size(); i++){
 			
 			Node n = nodeList.get(i);
-			System.out.println(n instanceof TextField ? ((TextField)n).getText() : "Not a TextField object");
-			
+
 			if (n instanceof TextField){
 				
 				TextField q = (TextField) n;
-				TextField a = (TextField)nodeList.get(i+1);
+				TextField a = (TextField) nodeList.get(i+1);
 				
-				System.out.println("!!! " + a.getText());
-				System.out.println("!!! " + q.getText());
+				System.out.println("<q: " + q.getText() + ", " + "a: " + a.getText() + ">");
+				
 				if ( !q.getText().equals("") && !a.getText().equals("")){
 					questionsHash.put(q, a);
 				}
@@ -124,14 +120,12 @@ public class Questions {
 			}
 		}
 		
-		for (Map.Entry<TextField, TextField> t : questionsHash.entrySet()){
-			System.out.println("t.key: " + t.getKey().getText() +  " || t.value: " + t.getValue().getText() );
-		}
+//		for (Map.Entry<TextField, TextField> t : questionsHash.entrySet()){
+//			System.out.println("t.key: " + t.getKey().getText() +  " || t.value: " + t.getValue().getText() );
+//		}
 	}
 	
-	private static void askQuestions(Stage window, Button buttonNext, GridPane gridPane, TextField textField) {
-		generateRows(gridPane, textField);
-		
+	private static void askQuestions(Stage window, Button buttonNext) {
 		Label ask = new Label();
 		TextField resp = new TextField();
 		Button quit = new Button("Quit");
@@ -163,8 +157,11 @@ public class Questions {
 		finalPane.setCenter(centerBox);
 		finalPane.setBottom(lowerBox);
 		
-		Iterator<Entry<TextField, TextField>> it = questionsHash.entrySet().iterator();
-		nextQuestion(ask, textField, it);
+		nextQuestion(ask);
+		
+		buttonNext.setOnAction(e -> {
+			nextQuestion(ask);
+		});
 		
 		sceneQuestions = new Scene(finalPane, 500, 500);
 		
@@ -176,21 +173,24 @@ public class Questions {
 		window.setScene(sceneQuestions);
 	}
 	
-	private static void nextQuestion(Label ask, TextField textField, Iterator<Entry<TextField, TextField>> it) {
-			while (it.hasNext()) {
-				Map.Entry<TextField, TextField> pair = (Map.Entry<TextField, TextField>)it.next();
-				TextField qu = pair.getKey();
-				TextField an = pair.getValue();
-				
-				System.out.println("qu.getText() : " + qu.getText());
-				System.out.println("an.getText() : " + an.getText());
-				
-				if(qu.getText().equals("") == false|| an.getText().equals("") == false) {
-					ask.setText(qu.getText());
-				} else {
-					nextQuestion(ask, textField, it);
-			}
+	private static void nextQuestion(Label ask) {
+		
+		Iterator<Entry<TextField, TextField>> it = questionsHash.entrySet().iterator();
+
+		
+		while (it.hasNext()) {
+			Map.Entry<TextField, TextField> pair = (Map.Entry<TextField, TextField>) it.next();
 			
+			TextField qu = pair.getKey();
+			TextField an = pair.getValue();
+			
+			if(!qu.getText().equals("") || !an.getText().equals("")) {
+				ask.setText(qu.getText());
+				TextField as = questionsHash.remove(qu);
+				System.out.println("as.getText() : " + as.getText());
+				break;
+			}
+		
 			System.out.println();
 		}
 	}
