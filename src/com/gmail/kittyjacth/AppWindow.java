@@ -24,30 +24,34 @@ public class AppWindow extends Application{
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		//Next button
-		Button buttonNext = new Button("Next");
-		buttonNext.setStyle("-fx-font-size:20;");
-		
 		window = primaryStage;
 		window.setTitle("AskMe!");
 		window.setResizable(false);
 		
+		Button buttonNext = new Button("Next");
 		Label labelWelcome = new Label("Welcome!");
-		labelWelcome.setStyle("-fx-font-size: 50;");
-		
 		Button buttonStart = new Button("Get started");
-		buttonStart.setStyle("-fx-font-size:20;");
-		buttonStart.setOnAction(e -> explanation(buttonNext));
-		
 		Button buttonQuit = new Button("Quit");
+		VBox boxWelcome = new VBox(5);
+		
+		buttonNext.setStyle("-fx-font-size:20;");
+		labelWelcome.setStyle("-fx-font-size: 50;");
+		buttonStart.setStyle("-fx-font-size:20;");
 		buttonQuit.setStyle("-fx-font-size:20;");
 		
-		VBox boxWelcome = new VBox(5);
+		buttonStart.setOnAction(e -> explanation(buttonNext));
+		buttonQuit.setOnAction(e -> {
+			closeProgram();
+		});
+		window.setOnCloseRequest(e -> {
+			e.consume();
+			closeProgram();
+		});
+		
 		boxWelcome.getChildren().addAll(labelWelcome, buttonStart, buttonQuit);
 		boxWelcome.setAlignment(Pos.CENTER);
 		
 		sceneWelcome = new Scene(boxWelcome, 400,300);
-		
 		
 		window.setScene(sceneWelcome);
 		window.show();
@@ -55,37 +59,43 @@ public class AppWindow extends Application{
 	
 	public void explanation(Button buttonNext) {
 		Label labelExp = new Label("Explanation");
-		labelExp.setStyle("-fx-font-size: 30;");
-		
-		
-		
 		Text textExp = new Text(10, 50, "");
+		BorderPane border = new BorderPane();
+		VBox boxExpV = new VBox(5);
+		Pane space = new Pane();
+		HBox boxExpH = new HBox(5);
+		
+		// Style
+		labelExp.setStyle("-fx-font-size: 30;");
 		textExp.setText("This is an application meant for studying, quizes,...You will have to fill in your questions and answers. When I ask you the question, and you answer correctly, you get to go to the next question. However, if not answered correctly, you'll have to keep answering until you get it right.\nSkipping is allowed.");
 		textExp.setWrappingWidth(490);
 		textExp.setStyle("-fx-font-size: 15;");
-		
-		buttonNext.setOnAction(e -> Questions.fillInQuestions(window, buttonNext));
-		
-		BorderPane border = new BorderPane();
-
-		VBox boxExpV = new VBox(5);
 		boxExpV.setPadding(new Insets(10,10,10,10));
-		boxExpV.getChildren().addAll(labelExp, textExp);
-		
-		border.setCenter(boxExpV);
-		
-		Pane space = new Pane();
 		space.setMinWidth(400);
-		
-		HBox boxExpH = new HBox(5);
 		boxExpH.setPadding(new Insets(10,10,10,10));
-		boxExpH.getChildren().addAll(space, buttonNext);
 		
+		// Events
+		buttonNext.setOnAction(e -> Questions.fillInQuestions(window, buttonNext));
+		window.setOnCloseRequest(e -> {
+			e.consume();
+			closeProgram();
+		});
+		
+		// Layout
+		boxExpH.getChildren().addAll(space, buttonNext);
+		boxExpV.getChildren().addAll(labelExp, textExp);
+		border.setCenter(boxExpV);
 		border.setBottom(boxExpH);
 		
 		sceneExplanation = new Scene(border, 500, 300);
 		
 		window.setScene(sceneExplanation);
+	}
+	
+	public static void closeProgram() {
+		Boolean answer = ConfirmBox.display("Quit?", "Are you sure you want to exit?");
+		if (answer)
+			Platform.exit();
 	}
 
 }
