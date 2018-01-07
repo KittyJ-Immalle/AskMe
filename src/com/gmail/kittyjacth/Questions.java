@@ -19,6 +19,8 @@ public class Questions {
 	static Scene sceneFillIn;
 	static Scene sceneQuestions;
 	static HashMap<TextField, TextField> questionsHash = new HashMap<TextField, TextField>();
+	static TextField qu;
+	static TextField an;
 	
 	public static void fillInQuestions(Stage window, Button buttonNext) {
 		GridPane centerPane = new GridPane();
@@ -123,17 +125,25 @@ public class Questions {
 		TextField resp = new TextField();
 		Button quit = new Button("Quit");
 		Button check = new Button("Answer");
+		Button showAnswer = new Button("Show Answer");
+		Label displayAnswer = new Label();
 		Pane space = new Pane();
 		Pane space2 = new Pane();
 		HBox topBox = new HBox(5);
 		VBox centerBox = new VBox(5);
 		HBox lowerBox = new HBox(5);
 		BorderPane finalPane = new BorderPane();
+		Label correctFalse = new Label();
+		Label answer = new Label();
 		
 		// Style
 		ask.setStyle("-fx-font-size:20;");
 		quit.setStyle("-fx-font-size:20;");
 		check.setStyle("-fx-font-size:20;");
+		correctFalse.setStyle("-fx-font-size:20;");
+		answer.setStyle("-fx-font-size:20;");
+		displayAnswer.setStyle("-fx-font-size:15;");
+		showAnswer.setStyle("-fx-font-size:15;");
 		space.setMinWidth(190);
 		space2.setMinWidth(110);
 		topBox.setPadding(new Insets(10,10,10,10));
@@ -142,43 +152,43 @@ public class Questions {
 		lowerBox.setPadding(new Insets(10,10,10,10));
 		
 		// Events
-		buttonNext.setOnAction(e -> {
-			nextQuestion(ask);
-		});
-		quit.setOnAction(e -> {
-			AppWindow.closeProgram();
-		});
+		buttonNext.setOnAction(e -> nextQuestion(ask, correctFalse, answer, showAnswer, displayAnswer));
+		quit.setOnAction(e -> AppWindow.closeProgram());
 		window.setOnCloseRequest(e -> {
 			e.consume();
 			AppWindow.closeProgram();
 		});
-		// check.setOnAction(); !!!
+		check.setOnAction(e -> checkAnswer(resp, correctFalse, showAnswer, displayAnswer));
+		showAnswer.setOnAction(e -> displayAnswer(displayAnswer));
 		
 		// Layout
 		topBox.getChildren().add(quit);
-		centerBox.getChildren().addAll(ask, resp);
+		centerBox.getChildren().addAll(ask, resp, correctFalse, answer, showAnswer, displayAnswer);
 		lowerBox.getChildren().addAll(space, check, space2, buttonNext);
 		finalPane.setTop(topBox);
 		finalPane.setCenter(centerBox);
 		finalPane.setBottom(lowerBox);
 		
-		nextQuestion(ask);
+		nextQuestion(ask, correctFalse, answer, showAnswer, displayAnswer);
 
 		sceneQuestions = new Scene(finalPane, 500, 500);
 		
 		window.setScene(sceneQuestions);
 	}
 	
-	private static void nextQuestion(Label ask) {
+	private static void nextQuestion(Label ask, Label correctFalse, Label answer, Button showAnswer, Label displayAnswer) {
+		correctFalse.setText("");
+		answer.setText("");
+		showAnswer.setVisible(false);
+		displayAnswer.setText("");
 		
 		Iterator<Entry<TextField, TextField>> it = questionsHash.entrySet().iterator();
 
-		
 		while (it.hasNext()) {
 			Map.Entry<TextField, TextField> pair = (Map.Entry<TextField, TextField>) it.next();
 			
-			TextField qu = pair.getKey();
-			TextField an = pair.getValue();
+			qu = pair.getKey();
+			an = pair.getValue();
 			
 			if(!qu.getText().equals("") || !an.getText().equals("")) {
 				ask.setText(qu.getText());
@@ -189,6 +199,24 @@ public class Questions {
 		
 			System.out.println();
 		}
+	}
+	
+	private static void checkAnswer(TextField response, Label correctFalse, Button showAnswer, Label answer) {
+		correctFalse.setText("");
+		showAnswer.setVisible(false);
+		answer.setText("");
+		if(response.getText().equals(an.getText())) {
+			correctFalse.setTextFill(Color.GREEN);
+			correctFalse.setText("Correct!");
+		} else {
+			correctFalse.setTextFill(Color.RED);
+			correctFalse.setText("Wrong!");
+			showAnswer.setVisible(true);
+		}
+	}
+	
+	private static void displayAnswer(Label answer) {
+		answer.setText(an.getText());
 	}
 	
 }
