@@ -22,7 +22,7 @@ public class Questions {
 	static TextField qu;
 	static TextField an;
 	
-	public static void fillInQuestions(Stage window, Button buttonNext) {
+	public static void displayFillIn(Stage window) {
 		GridPane centerPane = new GridPane();
 		BorderPane finalPane = new BorderPane();
 		ScrollPane scrollPane = new ScrollPane(centerPane);
@@ -33,6 +33,7 @@ public class Questions {
 		HBox centerBoxH = new HBox(5);
 		HBox lowerBox = new HBox(5);
 		Pane space = new Pane();
+		Button buttonNext = new Button("Next");
 		
 		TextField rowCount = new TextField("3");
 		rowCount.textProperty().addListener((observable) -> {
@@ -52,15 +53,12 @@ public class Questions {
 		centerBoxV.getChildren().addAll(fillIn, centerBoxH, rowCount);
 		lowerBox.setPadding(new Insets(10,10,10,10));
 		space.setMinWidth(400);
+		buttonNext.setStyle("-fx-font-size:20;");
 		
 		// Events
 		buttonNext.setOnAction(e -> {
 			insertQuestionsIntoQuestionsHash(centerPane);
-			askQuestions(window, buttonNext);
-		});
-		window.setOnCloseRequest(e -> {
-			e.consume();
-			AppWindow.closeProgram();
+			displayQuestions(window);
 		});
 		
 		// Layout
@@ -120,7 +118,7 @@ public class Questions {
 		
 	}
 	
-	private static void askQuestions(Stage window, Button buttonNext) {
+	public static void displayQuestions(Stage window) {
 		Label ask = new Label();
 		TextField resp = new TextField();
 		Button quit = new Button("Quit");
@@ -135,6 +133,7 @@ public class Questions {
 		BorderPane finalPane = new BorderPane();
 		Label correctFalse = new Label();
 		Label answer = new Label();
+		Button buttonNext = new Button("Next");
 		
 		// Style
 		ask.setStyle("-fx-font-size:20;");
@@ -150,14 +149,11 @@ public class Questions {
 		centerBox.setPadding(new Insets(10,10,10,10));
 		centerBox.setAlignment(Pos.CENTER);
 		lowerBox.setPadding(new Insets(10,10,10,10));
+		buttonNext.setStyle("-fx-font-size:20;");
 		
 		// Events
-		buttonNext.setOnAction(e -> nextQuestion(ask, correctFalse, answer, showAnswer, displayAnswer));
+		buttonNext.setOnAction(e -> nextQuestion(window, ask, correctFalse, answer, showAnswer, displayAnswer, resp));
 		quit.setOnAction(e -> AppWindow.closeProgram());
-		window.setOnCloseRequest(e -> {
-			e.consume();
-			AppWindow.closeProgram();
-		});
 		check.setOnAction(e -> checkAnswer(resp, correctFalse, showAnswer, displayAnswer));
 		showAnswer.setOnAction(e -> displayAnswer(displayAnswer));
 		
@@ -169,20 +165,24 @@ public class Questions {
 		finalPane.setCenter(centerBox);
 		finalPane.setBottom(lowerBox);
 		
-		nextQuestion(ask, correctFalse, answer, showAnswer, displayAnswer);
+		nextQuestion(window, ask, correctFalse, answer, showAnswer, displayAnswer, resp);
 
 		sceneQuestions = new Scene(finalPane, 500, 500);
 		
 		window.setScene(sceneQuestions);
 	}
 	
-	private static void nextQuestion(Label ask, Label correctFalse, Label answer, Button showAnswer, Label displayAnswer) {
+	private static void nextQuestion(Stage window, Label ask, Label correctFalse, Label answer, Button showAnswer, Label displayAnswer, TextField response) {
 		correctFalse.setText("");
 		answer.setText("");
 		showAnswer.setVisible(false);
 		displayAnswer.setText("");
+		response.setText("");
 		
 		Iterator<Entry<TextField, TextField>> it = questionsHash.entrySet().iterator();
+		
+		if(!it.hasNext()) 
+			EndScreen.displayEndScreen(window);
 
 		while (it.hasNext()) {
 			Map.Entry<TextField, TextField> pair = (Map.Entry<TextField, TextField>) it.next();

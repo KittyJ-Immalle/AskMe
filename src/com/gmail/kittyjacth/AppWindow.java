@@ -39,7 +39,7 @@ public class AppWindow extends Application{
 		buttonStart.setStyle("-fx-font-size:20;");
 		buttonQuit.setStyle("-fx-font-size:20;");
 		
-		buttonStart.setOnAction(e -> explanation(buttonNext));
+		buttonStart.setOnAction(e -> displayExplanation(buttonNext));
 		buttonQuit.setOnAction(e -> {
 			closeProgram();
 		});
@@ -57,7 +57,7 @@ public class AppWindow extends Application{
 		window.show();
 	}
 	
-	public void explanation(Button buttonNext) {
+	public void displayExplanation(Button buttonNext) {
 		Label labelExp = new Label("Explanation");
 		Text textExp = new Text(10, 50, "");
 		BorderPane border = new BorderPane();
@@ -75,11 +75,7 @@ public class AppWindow extends Application{
 		boxExpH.setPadding(new Insets(10,10,10,10));
 		
 		// Events
-		buttonNext.setOnAction(e -> Questions.fillInQuestions(window, buttonNext));
-		window.setOnCloseRequest(e -> {
-			e.consume();
-			closeProgram();
-		});
+		buttonNext.setOnAction(e -> Questions.displayFillIn(window));
 		
 		// Layout
 		boxExpH.getChildren().addAll(space, buttonNext);
