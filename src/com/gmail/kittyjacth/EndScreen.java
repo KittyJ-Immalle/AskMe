@@ -3,11 +3,14 @@ import javafx.stage.*;
 import javafx.scene.*;
 import javafx.scene.layout.*;
 import javafx.scene.control.*;
+
+import java.util.HashMap;
+
 import javafx.geometry.*;
 
 public class EndScreen {
 	
-	public static void displayEndScreen(Stage window) {
+	public static void displayEndScreen(Stage window, HashMap<TextField, TextField> questionsHash, GridPane centerPane) {
 		BorderPane finalPane = new BorderPane();
 		VBox centerBox = new VBox(10);
 		Scene scene = new Scene(finalPane, 500, 300);
@@ -24,7 +27,10 @@ public class EndScreen {
 		centerBox.setAlignment(Pos.CENTER);
 		
 		// Events
-		// replayButton.setOnAction();
+		replayButton.setOnAction(e -> {
+			Questions.insertQuestionsIntoQuestionsHash(questionsHash, centerPane);
+			Questions.displayQuestions(window);
+		});
 		newQuizButton.setOnAction(e -> Questions.displayFillIn(window));
 		quit.setOnAction(e -> AppWindow.closeProgram());
 		

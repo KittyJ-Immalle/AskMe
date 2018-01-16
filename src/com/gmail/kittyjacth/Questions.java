@@ -21,9 +21,10 @@ public class Questions {
 	static HashMap<TextField, TextField> questionsHash = new HashMap<TextField, TextField>();
 	static TextField qu;
 	static TextField an;
+	static GridPane centerPane = new GridPane();
 	
 	public static void displayFillIn(Stage window) {
-		GridPane centerPane = new GridPane();
+		
 		BorderPane finalPane = new BorderPane();
 		ScrollPane scrollPane = new ScrollPane(centerPane);
 		Label fillIn = new Label("Please fill in.");
@@ -57,7 +58,7 @@ public class Questions {
 		
 		// Events
 		buttonNext.setOnAction(e -> {
-			insertQuestionsIntoQuestionsHash(centerPane);
+			insertQuestionsIntoQuestionsHash(questionsHash, centerPane);
 			displayQuestions(window);
 		});
 		
@@ -94,7 +95,7 @@ public class Questions {
 		}
 	}
 	
-	private static void insertQuestionsIntoQuestionsHash(GridPane pane){
+	public static void insertQuestionsIntoQuestionsHash(HashMap<TextField, TextField> questionsHash, GridPane pane){
 		ObservableList<Node> nodeList = pane.getChildren();
 		
 		for (int i = 0; i < nodeList.size(); i++){
@@ -182,7 +183,7 @@ public class Questions {
 		Iterator<Entry<TextField, TextField>> it = questionsHash.entrySet().iterator();
 		
 		if(!it.hasNext()) 
-			EndScreen.displayEndScreen(window);
+			EndScreen.displayEndScreen(window, questionsHash, centerPane);
 
 		while (it.hasNext()) {
 			Map.Entry<TextField, TextField> pair = (Map.Entry<TextField, TextField>) it.next();
