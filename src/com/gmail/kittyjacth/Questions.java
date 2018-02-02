@@ -22,6 +22,12 @@ public class Questions {
 	static TextField qu;
 	static TextField an;
 	static GridPane centerPane = new GridPane();
+	static Label ask = new Label();
+	static Label correctFalse = new Label();
+	static Label answer = new Label();
+	static Button showAnswer = new Button("Show Answer");
+	static Label displayAnswer = new Label();
+	static TextField response = new TextField();
 	
 	public static void displayFillIn(Stage window) {
 		
@@ -120,30 +126,25 @@ public class Questions {
 	}
 	
 	public static void displayQuestions(Stage window) {
-		Label ask = new Label();
-		TextField resp = new TextField();
+		
 		Button quit = new Button("Quit");
 		Button check = new Button("Answer");
-		Button showAnswer = new Button("Show Answer");
-		Label displayAnswer = new Label();
 		Pane space = new Pane();
 		Pane space2 = new Pane();
 		HBox topBox = new HBox(5);
 		VBox centerBox = new VBox(5);
 		HBox lowerBox = new HBox(5);
 		BorderPane finalPane = new BorderPane();
-		Label correctFalse = new Label();
-		Label answer = new Label();
 		Button buttonNext = new Button("Next");
 		
 		// Style
 		ask.setStyle("-fx-font-size:20;");
-		quit.setStyle("-fx-font-size:20;");
-		check.setStyle("-fx-font-size:20;");
 		correctFalse.setStyle("-fx-font-size:20;");
 		answer.setStyle("-fx-font-size:20;");
 		displayAnswer.setStyle("-fx-font-size:15;");
 		showAnswer.setStyle("-fx-font-size:15;");
+		quit.setStyle("-fx-font-size:20;");
+		check.setStyle("-fx-font-size:20;");
 		space.setMinWidth(190);
 		space2.setMinWidth(110);
 		topBox.setPadding(new Insets(10,10,10,10));
@@ -153,27 +154,27 @@ public class Questions {
 		buttonNext.setStyle("-fx-font-size:20;");
 		
 		// Events
-		buttonNext.setOnAction(e -> nextQuestion(window, ask, correctFalse, answer, showAnswer, displayAnswer, resp));
+		buttonNext.setOnAction(e -> nextQuestion(window));
 		quit.setOnAction(e -> AppWindow.closeProgram());
-		check.setOnAction(e -> checkAnswer(resp, correctFalse, showAnswer, displayAnswer));
+		check.setOnAction(e -> checkAnswer());
 		showAnswer.setOnAction(e -> displayAnswer(displayAnswer));
 		
 		// Layout
 		topBox.getChildren().add(quit);
-		centerBox.getChildren().addAll(ask, resp, correctFalse, answer, showAnswer, displayAnswer);
+		centerBox.getChildren().addAll(ask, response, correctFalse, answer, showAnswer, displayAnswer);
 		lowerBox.getChildren().addAll(space, check, space2, buttonNext);
 		finalPane.setTop(topBox);
 		finalPane.setCenter(centerBox);
 		finalPane.setBottom(lowerBox);
 		
-		nextQuestion(window, ask, correctFalse, answer, showAnswer, displayAnswer, resp);
+		nextQuestion(window);
 
 		sceneQuestions = new Scene(finalPane, 500, 500);
 		
 		window.setScene(sceneQuestions);
 	}
 	
-	private static void nextQuestion(Stage window, Label ask, Label correctFalse, Label answer, Button showAnswer, Label displayAnswer, TextField response) {
+	private static void nextQuestion(Stage window) {
 		correctFalse.setText("");
 		answer.setText("");
 		showAnswer.setVisible(false);
@@ -202,7 +203,7 @@ public class Questions {
 		}
 	}
 	
-	private static void checkAnswer(TextField response, Label correctFalse, Button showAnswer, Label answer) {
+	private static void checkAnswer() {
 		correctFalse.setText("");
 		showAnswer.setVisible(false);
 		answer.setText("");
